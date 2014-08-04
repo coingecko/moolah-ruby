@@ -1,7 +1,10 @@
-require "moolah/ruby/version"
+require "moolah/version"
 
 module Moolah
-  module Ruby
-    # Your code goes here...
+  # Your code goes here...
+  class Client
+    def self.say_moo
+      puts "Moo!"
+    end
   end
 end

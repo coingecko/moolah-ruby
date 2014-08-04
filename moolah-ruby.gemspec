@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'moolah/ruby/version'
+require 'moolah/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "moolah-ruby"
-  spec.version       = Moolah::Ruby::VERSION
+  spec.version       = Moolah::VERSION
   spec.authors       = ["TM Lee"]
   spec.email         = ["tm89lee@gmail.com"]
   spec.summary       = %q{Ruby wrapper for the Moolah.io Transaction API}
