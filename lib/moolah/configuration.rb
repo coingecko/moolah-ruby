@@ -5,10 +5,21 @@ module Moolah
     DEFAULT_ENDPOINT = "https://api.moolah.io/v2"
     DEFAULT_API_KEY = nil
 
-    attr_accessors :api_key, :end_point
+    attr_accessor :api_key, :endpoint
+
+    # When extended, call reset to set variable values to defaults
+    def self.extended(mod)
+      mod.reset
+    end
+
+    def reset
+      self.api_key = DEFAULT_API_KEY
+      self.endpoint = DEFAULT_ENDPOINT
+    end
 
     def configure
       yield self
     end
+
   end
 end
