@@ -7,6 +7,10 @@ module Moolah
 
     attr_accessor *OPTIONS_KEYS
 
+    # Initializes a new Transaction
+    #
+    # @param params [Hash]
+    # @raise [ArgumentError] Error raised when supplied argument is missing any of the required key/values
     def initialize(params)
       # Assign values from params
       OPTIONS_KEYS.each do |key|
