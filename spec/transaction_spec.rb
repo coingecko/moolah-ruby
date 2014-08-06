@@ -30,6 +30,17 @@ describe Moolah::Transaction do
       expect(transaction.coin).to eq("bitcoin")
       expect(transaction.currency).to eq("USD")
     end
+
+    it "allows mix of param and block configuration" do
+      transaction = Moolah::Transaction.new({ coin: "bitcoin", amount: "100" }) do |t|
+        t.currency = "USD"
+        t.product = "Coingecko Pro"
+      end
+      expect(transaction.coin).to eq("bitcoin")
+      expect(transaction.amount).to eq("100")
+      expect(transaction.currency).to eq("USD")
+      expect(transaction.product).to eq("Coingecko Pro")
+    end
   end
 
 end
