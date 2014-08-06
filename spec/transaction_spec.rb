@@ -50,5 +50,24 @@ describe Moolah::Transaction do
       end
       expect(transaction.currency).to eq("MYR")
     end
+
+    it "raises ArgumentError if any required parameters not set" do
+      expect { Moolah::Transaction.new({ coin: "dogecoin" }) do |t|
+          t.amount = "123"
+        end
+      }.to raise_error(ArgumentError)
+    end
+
+    it "raises ArgumentError if any parameters are nil" do
+      incomplete_params = complete_symbol_params
+      incomplete_params[:coin] = nil
+      expect { Moolah::Transaction.new(incomplete_params) }.to raise_error(ArgumentError)
+    end
+
+    it "raises ArgumentError if any parameters are empty" do
+      incomplete_params = complete_symbol_params
+      incomplete_params[:coin] = ""
+      expect { Moolah::Transaction.new(incomplete_params) }.to raise_error(ArgumentError)
+    end
   end
 end

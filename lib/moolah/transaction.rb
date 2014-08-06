@@ -27,7 +27,8 @@ module Moolah
 
     def validate_keys
       TRANSACTION_KEYS.each do |key|
-        if !self.send("#{key}")
+        value = self.send("#{key}")
+        if !value or value.empty?
           raise ArgumentError, "Missing transaction parameter: #{key}"
         end
       end
