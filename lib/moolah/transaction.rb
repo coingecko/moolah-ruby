@@ -10,7 +10,7 @@ module Moolah
     #
     # @param params [Hash]
     # @raise [ArgumentError] Error raised when supplied argument is missing any of the required key/values
-    def initialize(params)
+    def initialize(params = {})
       if !params.is_a?(Hash)
         raise ArgumentError, "params must be a hash!"
       end
