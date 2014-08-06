@@ -1,15 +1,19 @@
 require 'moolah'
 
 describe Moolah do
-  describe ".configure" do
+  describe ".api_key" do
     it "has default api_key value of nil" do
       expect(Moolah.send(:api_key)).to eq(nil)
     end
+  end
 
-    it "had certain endpoint URL" do
+  describe ".endpoint" do
+    it "had default endpoint URL" do
       expect(Moolah.send(:endpoint)).to eq("https://api.moolah.io/v2")
     end
+  end
 
+  describe ".configure" do
     it "allows api_key configuration via a block" do
       sample_api_key = "12345678"
       Moolah.configure do |config|
