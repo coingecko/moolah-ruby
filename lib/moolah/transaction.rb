@@ -11,6 +11,10 @@ module Moolah
     # @param params [Hash]
     # @raise [ArgumentError] Error raised when supplied argument is missing any of the required key/values
     def initialize(params)
+      if !params.is_a?(Hash)
+        raise ArgumentError, "params must be a hash!"
+      end
+
       # Assign values from params
       TRANSACTION_KEYS.each do |key|
         if value_for_symbol = params[key] or value_for_string = params[key.to_s]
