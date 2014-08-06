@@ -11,21 +11,12 @@ module Moolah
     # @param params [Hash]
     # @raise [ArgumentError] Error raised when supplied argument is missing any of the required key/values
     def initialize(params = {})
-      if !params.is_a?(Hash)
-        raise ArgumentError, "params must be a hash!"
-      end
+      raise ArgumentError, "params must be a hash!" if !params.is_a?(Hash)
 
       # Assign values from params
       TRANSACTION_KEYS.each do |key|
-        if value_for_symbol = params[key] or value_for_string = params[key.to_s]
-          if value_for_symbol
-            self.send("#{key}=", value_for_symbol)
-          end
-
-          if value_for_string
-            self.send("#{key}=", value_for_string)
-          end
-        end
+        self.send("#{key}=", params[key]) if params[key]
+        self.send("#{key}=", params[key.to_s]) if params[key.to_s]
       end
 
       # Allow assigning to be done within block
