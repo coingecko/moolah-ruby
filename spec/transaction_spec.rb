@@ -28,7 +28,9 @@ describe Moolah::Transaction do
         t.product = "Coingecko Pro"
       end
       expect(transaction.coin).to eq("bitcoin")
+      expect(transaction.amount).to eq("100")
       expect(transaction.currency).to eq("USD")
+      expect(transaction.product).to eq("Coingecko Pro")
     end
 
     it "allows mix of param and block configuration" do
@@ -41,6 +43,12 @@ describe Moolah::Transaction do
       expect(transaction.currency).to eq("USD")
       expect(transaction.product).to eq("Coingecko Pro")
     end
-  end
 
+    it "prioritizes values set in the block" do
+      transaction = Moolah::Transaction.new(complete_symbol_params) do |t|
+        t.currency = "MYR"
+      end
+      expect(transaction.currency).to eq("MYR")
+    end
+  end
 end
