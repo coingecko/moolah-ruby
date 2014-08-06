@@ -1,7 +1,6 @@
 require 'moolah/version'
 
 module Moolah
-
   class Transaction
     TRANSACTION_KEYS = [ :coin, :currency, :amount, :product ].freeze
 
@@ -39,5 +38,4 @@ module Moolah
       end
     end
   end
-
 end
