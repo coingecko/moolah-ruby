@@ -3,15 +3,17 @@ require 'moolah/transaction'
 
 module Moolah
   class Client
-    # Optional
-    attr_reader :api_secret, :ipn
+    OPTIONAL_KEYS = [ :api_secret, :ipn ]
+
+    attr_accessor *OPTIONAL_KEYS
 
     # Initializes a new Client
     #
     # @param options [Hash]
     def initialize(options = {})
       @connection = Faraday.new(url: Moolah.endpoint)
-      OPTIONS_KEYS.each do |key|
+
+      OPTIONAL_KEYS.each do |key|
         if value_for_symbol = params[key] or value_for_string = params[key.to_s]
           self.send("#{key}=", value_for_symbol) if value_for_symbol
           self.send("#{key}=", value_for_string) if value_for_string
