@@ -3,9 +3,9 @@ require 'moolah/version'
 module Moolah
 
   class Transaction
-    OPTIONS_KEYS = [ :coin, :currency, :amount, :product ].freeze
+    TRANSACTION_KEYS = [ :coin, :currency, :amount, :product ].freeze
 
-    attr_accessor *OPTIONS_KEYS
+    attr_accessor *TRANSACTION_KEYS
 
     # Initializes a new Transaction
     #
@@ -13,7 +13,7 @@ module Moolah
     # @raise [ArgumentError] Error raised when supplied argument is missing any of the required key/values
     def initialize(params)
       # Assign values from params
-      OPTIONS_KEYS.each do |key|
+      TRANSACTION_KEYS.each do |key|
         if value_for_symbol = params[key] or value_for_string = params[key.to_s]
           if value_for_symbol
             self.send("#{key}=", value_for_symbol)
@@ -32,7 +32,7 @@ module Moolah
     end
 
     def validate_keys
-      OPTIONS_KEYS.each do |key|
+      TRANSACTION_KEYS.each do |key|
         if !self.send("#{key}")
           raise ArgumentError, "Missing transaction parameter: #{key}"
         end
