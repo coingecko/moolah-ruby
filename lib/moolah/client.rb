@@ -31,7 +31,7 @@ module Moolah
       # Validate!
       transaction.validate_keys
 
-      connection.post do |req|
+      response = connection.post do |req|
         req.url "/private/merchant/create"
 
         # Required fields
@@ -42,9 +42,9 @@ module Moolah
         req.params['product'] = transaction.product
 
         # Optional fields
-        (req.params['apiSecret'] = api_secret) if api_secret
-        (req.params['ipn'] = ipn) if ipn
-        (req.params['ipn_extra'] = ipn_extra) if ipn_extra
+        req.params['apiSecret'] = api_secret if api_secret
+        req.params['ipn'] = ipn if ipn
+        req.params['ipn_extra'] = ipn_extra if ipn_extra
       end
 
       transaction
