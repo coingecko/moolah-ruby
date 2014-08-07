@@ -13,9 +13,7 @@ module Moolah
     # @param options [Hash]
     def initialize(options = {})
       # Check for api key
-      unless Moolah.api_key
-        raise ArgumentError, "API Key is not set!"
-      end
+      raise ArgumentError, "API Key is not set!" unless Moolah.api_key
 
       @connection = Faraday.new(url: Moolah.endpoint)
 

@@ -13,5 +13,11 @@ describe Moolah::Client do
     it "should not complain if API key is given" do
       expect { Moolah::Client.new }.not_to raise_error
     end
+
+    it "can take api_secret and ipn as optional parameters" do
+      client = Moolah::Client.new({ ipn: "http://www.example.com", api_secret: "a_secret_key" })
+      expect(client.ipn).to eq("http://www.example.com")
+      expect(client.api_secret).to eq("a_secret_key")
+    end 
   end
 end
