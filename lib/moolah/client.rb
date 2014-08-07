@@ -18,10 +18,8 @@ module Moolah
       @connection = Faraday.new(url: Moolah.endpoint)
 
       OPTIONAL_KEYS.each do |key|
-        if value_for_symbol = options[key] or value_for_string = options[key.to_s]
-          self.send("#{key}=", value_for_symbol) if value_for_symbol
-          self.send("#{key}=", value_for_string) if value_for_string
-        end
+        self.send("#{key}=", options[key]) if options[key]
+        self.send("#{key}=", options[key.to_s]) if options[key.to_s]
       end
     end
 
