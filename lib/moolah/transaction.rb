@@ -10,7 +10,7 @@ module Moolah
     #
     # @param params [Hash]
     # @raise [ArgumentError] Error raised when supplied argument is missing any of the required key/values
-    def initialize(params = {})
+    def initialize(params = {}, validate = true)
       raise ArgumentError, "params must be a hash!" if !params.is_a?(Hash)
 
       # Assign values from params
@@ -22,7 +22,7 @@ module Moolah
       # Allow assigning to be done within block
       yield self if block_given?
 
-      validate_keys
+      validate_keys if validate
     end
 
     def validate_keys

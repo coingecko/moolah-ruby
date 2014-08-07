@@ -47,6 +47,16 @@ describe Moolah::Client do
       transaction = client.create_transaction transaction_params
       expect(transaction.coin).to eq("dogecoin")
     end
+
+    it "allows transaction params to be given in the block" do
+      transaction = client.create_transaction do |t|
+        t.coin = "dogecoin"
+        t.currency = "USD"
+        t.amount = "123"
+        t.product = "Coingecko Pro"
+      end
+      expect(transaction.product).to eq("Coingecko Pro")
+    end
   end
 
 end

@@ -21,12 +21,15 @@ module Moolah
       end
     end
 
-    def create_transaction(transaction_params = {}, ipn_extra = nil, &block)
-      if block_given?
-        transaction = Transaction.new(transaction_params, block)
-      else
-        transaction = Transaction.new(transaction_params)
-      end
+    def create_transaction(transaction_params = {}, ipn_extra = nil)
+      # Create transaction with validation off
+      transaction = Transaction.new(transaction_params, false)
+
+      # Allow transaction to be configured in block
+      yield transaction if block_given? 
+
+      # Validate!
+      transaction.validate_keys
 
       connection.post do |req|
         req.url "/private/merchant/create"
