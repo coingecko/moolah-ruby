@@ -1,5 +1,6 @@
 require 'moolah/version'
 require 'moolah/transaction'
+require 'faraday'
 
 module Moolah
   class Client
@@ -11,10 +12,15 @@ module Moolah
     #
     # @param options [Hash]
     def initialize(options = {})
+      # Check for api key
+      unless Moolah.api_key
+        raise ArgumentError, "API Key is not set!"
+      end
+
       @connection = Faraday.new(url: Moolah.endpoint)
 
       OPTIONAL_KEYS.each do |key|
-        if value_for_symbol = params[key] or value_for_string = params[key.to_s]
+        if value_for_symbol = options[key] or value_for_string = options[key.to_s]
           self.send("#{key}=", value_for_symbol) if value_for_symbol
           self.send("#{key}=", value_for_string) if value_for_string
         end
@@ -43,6 +49,8 @@ module Moolah
         (req.params['ipn'] = ipn) if ipn
         (req.params['ipn_extra'] = ipn_extra) if ipn_extra
       end
+
+      transaction
     end
 
   end
