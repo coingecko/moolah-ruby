@@ -24,4 +24,29 @@ describe Moolah::Client do
       end
     end
   end
+
+  describe ".create_transaction" do
+    let(:action_path) { "/private/merchant/create" }
+    let(:client) { Moolah::Client.new }
+
+    # Provide API Key first
+    before do
+      allow(Moolah).to receive(:api_key).and_return("1234567890")
+
+      # Stub the connection
+      test_connection = Faraday.new do |builder|
+        builder.adapter :test do |stub|
+          stub.post(action_path) { |env| [ 200, {}, 'hello' ]}
+        end
+      end
+      allow(client).to receive(:connection).and_return(test_connection)
+    end
+
+    it "allows transaction params to be given as argument" do
+      transaction_params = { coin: "dogecoin", amount: "1234", currency: "USD", product: "Coingecko Pro" }
+      transaction = client.create_transaction transaction_params
+      expect(transaction.coin).to eq("dogecoin")
+    end
+  end
+
 end

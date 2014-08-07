@@ -15,22 +15,20 @@ module Moolah
       # Check for api key
       raise ArgumentError, "API Key is not set!" unless Moolah.api_key
 
-      @connection = Faraday.new(url: Moolah.endpoint)
-
       OPTIONAL_KEYS.each do |key|
         self.send("#{key}=", options[key]) if options[key]
         self.send("#{key}=", options[key.to_s]) if options[key.to_s]
       end
     end
 
-    def create_transaction(transaction_params, ipn_extra = nil, &block)
+    def create_transaction(transaction_params = {}, ipn_extra = nil, &block)
       if block_given?
         transaction = Transaction.new(transaction_params, block)
       else
         transaction = Transaction.new(transaction_params)
       end
 
-      @connection.post do |req|
+      connection.post do |req|
         req.url "/private/merchant/create"
 
         # Required fields
@@ -49,5 +47,9 @@ module Moolah
       transaction
     end
 
+    # Connection method for ease of stubbing
+    def connection
+      @connection ||= Faraday.new(url: Moolah.endpoint)
+    end
   end
 end
