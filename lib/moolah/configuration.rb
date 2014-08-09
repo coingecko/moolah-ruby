@@ -5,7 +5,6 @@ module Moolah
     DEFAULT_ENDPOINT = "https://api.moolah.io/v2"
     DEFAULT_API_KEY = nil
     DEFAULT_API_SECRET = nil
-    DEFAULT_IPN = nil
 
     attr_accessor :api_key, :api_secret, :ipn, :endpoint
 
@@ -17,7 +16,6 @@ module Moolah
     def reset
       self.api_key = DEFAULT_API_KEY
       self.api_secret = DEFAULT_API_SECRET
-      self.ipn = DEFAULT_IPN
       self.endpoint = DEFAULT_ENDPOINT
     end
 
