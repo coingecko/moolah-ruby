@@ -55,6 +55,7 @@ describe Moolah::Client do
       it { expect(transaction.response.address).to eq("DS6frMZR5jFVEf9V6pBi9qtcVJa2JX5ewR") }
       it { expect(transaction.response.timestamp).to eq(1407579569) }
       it { expect(transaction.response.url).to eq("https://pay.moolah.io/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-") }
+      it { expect(transaction.raw_response).to eq(json_response) }
     end
 
     shared_examples :failure_transaction do

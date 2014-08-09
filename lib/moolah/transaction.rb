@@ -8,7 +8,7 @@ module Moolah
     attr_accessor *TRANSACTION_KEYS
 
     # Returns a TransactionResponse
-    attr_accessor :response
+    attr_accessor :response, :raw_response
 
     # Initializes a new Transaction
     #

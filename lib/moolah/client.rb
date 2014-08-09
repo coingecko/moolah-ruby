@@ -47,7 +47,8 @@ module Moolah
         req.params['ipn_extra'] = ipn_extra if ipn_extra
       end
 
-      transaction.response = Moolah::TransactionResponse.new(faraday_response.body)
+      transaction.raw_response = faraday_response.body
+      transaction.response = Moolah::TransactionResponse.new(transaction.raw_response)
       transaction
     end
 
