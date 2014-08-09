@@ -35,10 +35,6 @@ describe Moolah::Client do
     let(:action_path) { "/private/merchant/create" }
     let(:transaction_params) { { coin: "dogecoin", amount: "20", currency: "USD", product: "Coingecko Pro" } }
     let(:request_stubs) { Faraday::Adapter::Test::Stubs.new }
-    #    do |stub|
-    #     stub.post(action_path) { |env| [ 200, {}, 'hello' ]}
-    #   end
-    # end
     let (:test_connection) do
       Faraday.new do |builder|
         builder.adapter :test, request_stubs
