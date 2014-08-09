@@ -1,6 +1,12 @@
 require 'moolah'
 
 describe Moolah::Client do
+  let(:request_stubs) { Faraday::Adapter::Test::Stubs.new }
+  let (:test_connection) do
+    Faraday.new do |builder|
+      builder.adapter :test, request_stubs
+    end
+  end
 
   describe ".initialize" do
     it "complains when API key is not configured" do
@@ -31,15 +37,9 @@ describe Moolah::Client do
     end
   end
 
-  describe ".create_transaction" do
+  describe "#create_transaction" do
     let(:action_path) { "/private/merchant/create" }
     let(:transaction_params) { { coin: "dogecoin", amount: "20", currency: "USD", product: "Coingecko Pro" } }
-    let(:request_stubs) { Faraday::Adapter::Test::Stubs.new }
-    let (:test_connection) do
-      Faraday.new do |builder|
-        builder.adapter :test, request_stubs
-      end
-    end
 
     # Provide API Key first
     before do
@@ -133,6 +133,58 @@ describe Moolah::Client do
       end
 
       it_behaves_like :failure_transaction
+    end
+  end
+
+  describe "#query_transaction" do
+    let(:client) { Moolah::Client.new }
+    let(:action_path) { "/private/merchant/status" }
+    let(:post_path) { "#{action_path}?apiKey=1234567890&guid=1234-1234-1234" }
+    before do
+      allow(Moolah).to receive(:api_key).and_return("1234567890")
+    end
+
+    context "transaction does not exist" do
+      before do
+        allow(client).to receive(:connection).and_return(test_connection)
+        request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
+      end
+      let(:json_response) { '{ "status": "failure", "reason": "No such transaction." }' }
+
+      it "returns a symbolized has of the json response" do
+        result = client.query_transaction({api_key: "1234567890", guid:"1234-1234-1234"})
+        expect(result[:status]).to eq("failure")
+        expect(result[:reason]).to eq("No such transaction.")
+      end
+    end
+
+    context "transaction exists" do
+      before do
+        allow(client).to receive(:connection).and_return(test_connection)
+        request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
+      end
+      let(:json_response) { '{
+        "status": "success",
+        "transaction": {
+          "tx": {
+              "amount": "26651.62068965",
+              "coin": "dogecoin",
+              "guid": "692-6c-e5fa17a37-4baa72bf7c5-78d88d6",
+              "status": "cancelled",
+              "tx": "-1"
+          }
+        }
+      }' }
+
+      it "returns a symbolized has of the json response" do
+        result = client.query_transaction({api_key: "1234567890", guid:"1234-1234-1234"})
+        expect(result[:status]).to eq("success")
+        expect(result[:transaction][:tx][:amount]).to eq("26651.62068965")
+        expect(result[:transaction][:tx][:coin]).to eq("dogecoin")
+        expect(result[:transaction][:tx][:guid]).to eq("692-6c-e5fa17a37-4baa72bf7c5-78d88d6")
+        expect(result[:transaction][:tx][:status]).to eq("cancelled")
+        expect(result[:transaction][:tx][:tx]).to eq("-1")
+      end
     end
   end
 
