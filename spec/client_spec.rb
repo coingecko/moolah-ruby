@@ -50,7 +50,7 @@ describe Moolah::Client do
       allow(Moolah).to receive(:api_key).and_return("1234567890")
     end
 
-    shared_examples "a successful transaction" do
+    shared_examples :success_transaction do
       it { expect(transaction.response).to be_an_instance_of(Moolah::TransactionResponse) }
       it { expect(transaction.response.status).to eq("success") }
       it { expect(transaction.response.amount).to eq("121526.39285714") }
@@ -74,7 +74,7 @@ describe Moolah::Client do
         context "allows transaction params to be given as argument" do
           let(:transaction) { client.create_transaction transaction_params }
 
-          it_behaves_like "a successful transaction"
+          it_behaves_like :success_transaction
         end
 
         context "allows transaction params to be given in the block" do
@@ -87,7 +87,7 @@ describe Moolah::Client do
             end
           end
 
-          it_behaves_like "a successful transaction"
+          it_behaves_like :success_transaction
         end
       end
 
@@ -101,7 +101,7 @@ describe Moolah::Client do
         let(:json_response) { '{"status":"success","guid":"a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","url":"https:\/\/pay.moolah.io\/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","coin":"dogecoin","amount":"121526.39285714","address":"DS6frMZR5jFVEf9V6pBi9qtcVJa2JX5ewR","timestamp":1407579569}' }
         let(:transaction) { client.create_transaction transaction_params }
 
-        it_behaves_like "a successful transaction"
+        it_behaves_like :success_transaction
       end
     end
   end
