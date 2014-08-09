@@ -16,25 +16,32 @@ module Moolah
     end
 
     def create_transaction(transaction_params = {})
+      coin = transaction_params[:coin] || transaction_params["coin"]
+      currency = transaction_params[:currency] || transaction_params["currency"]
+      amount = transaction_params[:amount] || transaction_params["amount"]
+      product = transaction_params[:product] || transaction_params["product"]
+
+      # Check all parameters present
+      raise ArgumentError, "Missing transaction parameter(s)" unless coin && currency && amount && product
+
       faraday_response = connection.post do |req|
         req.url CREATE_TRANSACTION_ACTION
 
         # Required fields
         req.params['apiKey'] = Moolah.api_key # apiKey (camel case) is the actual field
-        req.params['coin'] = transaction_params[:coin] || transaction_params["coin"]
-        req.params['currency'] = transaction_params[:currency] || transaction_params["currency"]
-        req.params['amount'] = transaction_params[:amount] || transaction_params["amount"]
-        req.params['product'] = transaction_params[:product] || transaction_params["product"]
+        req.params['coin'] = coin
+        req.params['currency'] = currency
+        req.params['amount'] = amount
+        req.params['product'] = product
 
         # Optional fields
-        ipn_extra = transaction_params[:ipn_extra] || transaction_params["ipn_extra"]]
-        if ipn_extra
-          raise ArgumentError, "IPN is not set!" unless Moolah.ipn
+        ipn = transaction_params[:ipn] || transaction_params["ipn"]
+        if ipn
           raise ArgumentError, "API Secret is not set!" unless Moolah.api_secret
 
-          req.params['ipn_extra'] = ipn_extra
+          req.params['ipn'] = ipn
+          req.params['ipn_extra'] = transaction_params[:ipn_extra] || transaction_params["ipn_extra"]
           req.params['apiSecret'] = Moolah.api_secret # apiSecret (camel case) is the actual field
-          req.params['ipn'] = Moolah.ipn
         end
       end
 

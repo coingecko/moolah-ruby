@@ -34,7 +34,6 @@ describe Moolah::Client do
     before do
       allow(Moolah).to receive(:api_key).and_return("1234567890")
       allow(Moolah).to receive(:api_secret).and_return("secret")
-      allow(Moolah).to receive(:ipn).and_return("www.example.com/processed_payment")
     end
 
     shared_examples :success_transaction do
@@ -67,7 +66,7 @@ describe Moolah::Client do
     end
 
     context "successful transaction" do
-      context "without optional ipn_extra parameter" do
+      context "without optional ipn & ipn_extra parameter" do
         before do
           allow(client).to receive(:connection).and_return(test_connection)
           request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
@@ -77,34 +76,32 @@ describe Moolah::Client do
 
         context "allows transaction params to be given as argument" do
           let(:result) { client.create_transaction transaction_params }
-
           it_behaves_like :success_transaction
         end
       end
 
-      context "with optional ipn_extra parameter" do
+      context "with optional ipn & ipn_extra parameter" do
         before do
           allow(client).to receive(:connection).and_return(test_connection)
           request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
         end
-        let(:post_path) { "#{action_path}?amount=20&apiKey=1234567890&apiSecret=secret&coin=dogecoin&currency=USD&ipn=www.example.com%2Fprocessed_payment&product=Coingecko+Pro" }
+        let(:post_path) { "#{action_path}?amount=20&apiKey=1234567890&apiSecret=secret&coin=dogecoin&currency=USD&ipn=www.example.com%2Fprocessed_payment&ipn_extra=extrastuff&product=Coingecko+Pro" }
         let(:json_response) { '{"status":"success","guid":"a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","url":"https:\/\/pay.moolah.io\/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","coin":"dogecoin","amount":"121526.39285714","address":"DS6frMZR5jFVEf9V6pBi9qtcVJa2JX5ewR","timestamp":1407579569}' }
+        let(:transaction_params_with_ipn) { { coin: "dogecoin", amount: "20", currency: "USD", product: "Coingecko Pro", ipn: "www.example.com/processed_payment", ipn_extra: "extrastuff" } }
 
         let(:result) { client.create_transaction transaction_params }
-
         it_behaves_like :success_transaction
       end
     end
 
     context "failure transaction" do
-      let(:client) { Moolah::Client.new }
-      let(:post_path) { "#{action_path}?amount=20&apiKey=1234567890&coin=dogecoin&currency=USD&product=Coingecko+Pro" }
-      let(:json_response) { '{"status":"failure"}' }
-      let(:transaction) { client.create_transaction transaction_params }
       before do
         allow(client).to receive(:connection).and_return(test_connection)
         request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
       end
+      let(:post_path) { "#{action_path}?amount=20&apiKey=1234567890&coin=dogecoin&currency=USD&product=Coingecko+Pro" }
+      let(:json_response) { '{"status":"failure"}' }
+      let(:transaction) { client.create_transaction transaction_params }
 
       it_behaves_like :failure_transaction
     end
