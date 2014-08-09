@@ -2,13 +2,10 @@ require 'moolah'
 
 describe Moolah do
   describe ".api_key" do
-    it "has default api_key value of nil" do
+    it "has default values" do
       expect(Moolah.send(:api_key)).to eq(nil)
-    end
-  end
-
-  describe ".endpoint" do
-    it "had default endpoint URL" do
+      expect(Moolah.send(:api_secret)).to eq(nil)
+      expect(Moolah.send(:ipn)).to eq(nil)
       expect(Moolah.send(:endpoint)).to eq("https://api.moolah.io/v2")
     end
   end
