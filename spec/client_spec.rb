@@ -33,7 +33,7 @@ describe Moolah::Client do
 
   describe ".create_transaction" do
     let(:action_path) { "/private/merchant/create" }
-    let(:transaction_params) { { coin: "dogecoin", amount: "1234", currency: "USD", product: "Coingecko Pro" } }
+    let(:transaction_params) { { coin: "dogecoin", amount: "20", currency: "USD", product: "Coingecko Pro" } }
     let(:request_stubs) { Faraday::Adapter::Test::Stubs.new }
     #    do |stub|
     #     stub.post(action_path) { |env| [ 200, {}, 'hello' ]}
@@ -52,37 +52,49 @@ describe Moolah::Client do
 
     context "without optional parameters (ipn, api_secret, ipn_extra)" do
       let(:client) { Moolah::Client.new }
+      let(:post_path) { "#{action_path}?amount=20&apiKey=1234567890&coin=dogecoin&currency=USD&product=Coingecko+Pro" }
+      let(:json_response) { '{"status":"success","guid":"a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","url":"https:\/\/pay.moolah.io\/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","coin":"dogecoin","amount":"121526.39285714","address":"DS6frMZR5jFVEf9V6pBi9qtcVJa2JX5ewR","timestamp":1407579569}' }
       before do
         allow(client).to receive(:connection).and_return(test_connection)
-        request_stubs.post("#{action_path}?amount=1234&apiKey=1234567890&coin=dogecoin&currency=USD&product=Coingecko+Pro") { |env| [ 200, {}, 'hello' ] }
+        request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
       end
 
       it "allows transaction params to be given as argument" do
         transaction = client.create_transaction transaction_params
         expect(transaction.coin).to eq("dogecoin")
+        expect(transaction.response.status).to eq("success")
       end
 
       it "allows transaction params to be given in the block" do
         transaction = client.create_transaction do |t|
           t.coin = "dogecoin"
           t.currency = "USD"
-          t.amount = "1234"
+          t.amount = "20"
           t.product = "Coingecko Pro"
         end
-        expect(transaction.product).to eq("Coingecko Pro")
+
+        transaction_response = transaction.response
+        expect(transaction_response.status).to eq("success")
+        expect(transaction_response.amount).to eq("121526.39285714")
+        expect(transaction_response.coin).to eq("dogecoin")
+        expect(transaction_response.url).to eq("https://pay.moolah.io/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-")
       end
     end
 
     context "with optional parameters" do
       let(:client) { Moolah::Client.new({ api_secret: "secret", ipn: "www.example.com/processed_payment" }) }
+      let(:post_path) { "#{action_path}?amount=20&apiKey=1234567890&apiSecret=secret&coin=dogecoin&currency=USD&ipn=www.example.com%2Fprocessed_payment&product=Coingecko+Pro" }
+      let(:json_response) { '{"status":"success","guid":"a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","url":"https:\/\/pay.moolah.io\/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","coin":"dogecoin","amount":"121526.39285714","address":"DS6frMZR5jFVEf9V6pBi9qtcVJa2JX5ewR","timestamp":1407579569}' }
       before do
         allow(client).to receive(:connection).and_return(test_connection)
-        request_stubs.post("#{action_path}?amount=1234&apiKey=1234567890&apiSecret=secret&coin=dogecoin&currency=USD&ipn=www.example.com%2Fprocessed_payment&product=Coingecko+Pro") { |env| [ 200, {}, 'hello' ] }
+        request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
       end
 
       it "sends out request with these optional parameters" do
         transaction = client.create_transaction transaction_params
-        expect(transaction.coin).to eq("dogecoin")
+
+        expect(transaction.response).to be_an_instance_of(Moolah::TransactionResponse)
+        expect(transaction.response.status).to eq("success")
       end
     end
   end

@@ -31,7 +31,7 @@ module Moolah
       # Validate!
       transaction.validate_keys
 
-      response = connection.post do |req|
+      faraday_response = connection.post do |req|
         req.url "/private/merchant/create"
 
         # Required fields
@@ -47,6 +47,7 @@ module Moolah
         req.params['ipn_extra'] = ipn_extra if ipn_extra
       end
 
+      transaction.response = Moolah::TransactionResponse.new(faraday_response.body)
       transaction
     end
 
