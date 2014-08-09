@@ -53,5 +53,33 @@ module Moolah
         self.send("#{key}=", json_response_hash[key.to_s])
       end
     end
-  end 
+  end
+
+  class TransactionIPNResponse
+    IPN_RESPONSE_PAYLOAD_KEYS = [ :api_secret, :guid, :timestamp, :status, :tx, :ipn_extra ].freeze
+
+    KEY_TO_ACTUAL_FIELD_MAPPING = { :api_secret => :apiSecret }
+
+    attr_accessor *IPN_RESPONSE_PAYLOAD_KEYS
+
+    def initialize(payload = {})
+      raise ArgumentError, "IPN response payload cannot be empty!" if payload.empty?
+
+      if payload.is_a?(String) 
+        parsed_payload = CGI.parse(payload) # {"a":["b"], "c":["d"]}
+        payload_hash = Hash[parsed_payload.map {|key,values| [key.to_sym, values[0]]}] #{a: b, c: d}
+      elsif payload.is_a?(Hash)
+        payload_hash = payload
+      else
+        raise ArgumentError, "Wrong argument type!"
+      end
+
+      IPN_RESPONSE_PAYLOAD_KEYS.each do |key|
+        actual_key = KEY_TO_ACTUAL_FIELD_MAPPING[key] ? KEY_TO_ACTUAL_FIELD_MAPPING[key] : key
+
+        value = payload_hash[actual_key] || payload_hash[actual_key.to_s]
+        self.send("#{key}=", value)
+      end
+    end
+  end
 end
