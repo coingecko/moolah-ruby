@@ -68,6 +68,15 @@ describe Moolah::Client do
       it { expect(transaction.response.url).to eq(nil) }
     end
 
+    context "incomplete transaction parameters" do
+      let(:client) { Moolah::Client.new }
+      let(:incomplete_transaction_params) { { coin: "dogecoin", amount: "20", currency: "USD" } }
+
+      it "throws ArgumentError" do
+        expect { client.create_transaction(incomplete_transaction_params) }.to raise_error(ArgumentError)
+      end
+    end
+
     context "successful transaction" do
       context "without optional parameters (ipn, api_secret, ipn_extra)" do
         let(:client) { Moolah::Client.new }
