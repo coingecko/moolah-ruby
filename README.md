@@ -6,20 +6,26 @@ Wrapper API for Moolah's Transaction API (v2)
 
 Add this line to your application's Gemfile:
 
-    gem 'moolah-ruby'
+```bash
+gem 'moolah-ruby'
+```
 
 And then execute:
 
-    $ bundle
+```bash
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install moolah-ruby
+```bash
+$ gem install moolah-ruby
+```
 
 ## Usage
 
 Configuration:
-```
+```ruby
 Moolah.configure do |config|
   config.api_key = ENV['API_KEY']
   config.api_secret = ENV['API_SECRET'] # necessary for IPN response
@@ -28,7 +34,7 @@ end
 ```
 
 Create a transaction:
-```
+```ruby
 moolah_client = Moolah::Client.new
 
 # No IPN Response
@@ -44,11 +50,11 @@ response[:address] # "abcdefghijklmnopqrstuvwxyz"
 ```
 
 Query a transaction:
-```
+```ruby
 query_result = moolah_client.query_transaction(guid:"1234-1234-1234-1234")
 
-query_result[:status] # success
-query_result[:transaction][:tx][:coin] #bitcoin
+query_result[:status] # "success"
+query_result[:transaction][:tx][:coin] # "bitcoin"
 # etc.
 ```
 
