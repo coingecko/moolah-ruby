@@ -61,6 +61,17 @@ describe Moolah::Client do
       it { expect(transaction.response.url).to eq("https://pay.moolah.io/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-") }
     end
 
+    shared_examples :failure_transaction do
+      it { expect(transaction.response).to be_an_instance_of(Moolah::TransactionResponse) }
+      it { expect(transaction.response.status).to eq("failure") }
+      it { expect(transaction.response.amount).to eq(nil) }
+      it { expect(transaction.response.coin).to eq(nil) }
+      it { expect(transaction.response.guid).to eq(nil) }
+      it { expect(transaction.response.address).to eq(nil) }
+      it { expect(transaction.response.timestamp).to eq(nil) }
+      it { expect(transaction.response.url).to eq(nil) }
+    end
+
     context "successful transaction" do
       context "without optional parameters (ipn, api_secret, ipn_extra)" do
         let(:client) { Moolah::Client.new }
@@ -103,6 +114,19 @@ describe Moolah::Client do
 
         it_behaves_like :success_transaction
       end
+    end
+
+    context "failure transaction" do
+      let(:client) { Moolah::Client.new }
+      let(:post_path) { "#{action_path}?amount=20&apiKey=1234567890&coin=dogecoin&currency=USD&product=Coingecko+Pro" }
+      let(:json_response) { '{"status":"failure"}' }
+      let(:transaction) { client.create_transaction transaction_params }
+      before do
+        allow(client).to receive(:connection).and_return(test_connection)
+        request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
+      end
+
+      it_behaves_like :failure_transaction
     end
   end
 
