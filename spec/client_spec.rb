@@ -122,7 +122,7 @@ describe Moolah::Client do
       let(:json_response) { '{ "status": "failure", "reason": "No such transaction." }' }
 
       it "returns a symbolized has of the json response" do
-        result = client.query_transaction({api_key: "1234567890", guid:"1234-1234-1234"})
+        result = client.query_transaction(guid:"1234-1234-1234")
         expect(result[:status]).to eq("failure")
         expect(result[:reason]).to eq("No such transaction.")
       end
