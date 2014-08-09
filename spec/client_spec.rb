@@ -89,7 +89,7 @@ describe Moolah::Client do
         let(:json_response) { '{"status":"success","guid":"a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","url":"https:\/\/pay.moolah.io\/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-","coin":"dogecoin","amount":"121526.39285714","address":"DS6frMZR5jFVEf9V6pBi9qtcVJa2JX5ewR","timestamp":1407579569}' }
         let(:transaction_params_with_ipn) { { coin: "dogecoin", amount: "20", currency: "USD", product: "Coingecko Pro", ipn: "www.example.com/processed_payment", ipn_extra: "extrastuff" } }
 
-        let(:result) { client.create_transaction transaction_params }
+        let(:result) { client.create_transaction transaction_params_with_ipn }
         it_behaves_like :success_transaction
       end
     end
@@ -101,8 +101,8 @@ describe Moolah::Client do
       end
       let(:post_path) { "#{action_path}?amount=20&apiKey=1234567890&coin=dogecoin&currency=USD&product=Coingecko+Pro" }
       let(:json_response) { '{"status":"failure"}' }
-      let(:transaction) { client.create_transaction transaction_params }
 
+      let(:result) { client.create_transaction transaction_params }
       it_behaves_like :failure_transaction
     end
   end
