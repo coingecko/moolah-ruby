@@ -59,25 +59,33 @@ describe Moolah::Client do
         request_stubs.post(post_path) { |env| [ 200, {}, json_response ] }
       end
 
-      it "allows transaction params to be given as argument" do
-        transaction = client.create_transaction transaction_params
-        expect(transaction.coin).to eq("dogecoin")
-        expect(transaction.response.status).to eq("success")
+      shared_examples "successful transaction" do
+        it { expect(transaction.response.status).to eq("success") }
+        it { expect(transaction.response.amount).to eq("121526.39285714") }
+        it { expect(transaction.response.coin).to eq("dogecoin") }
+        it { expect(transaction.response.guid).to eq("a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-") }
+        it { expect(transaction.response.address).to eq("DS6frMZR5jFVEf9V6pBi9qtcVJa2JX5ewR") }
+        it { expect(transaction.response.timestamp).to eq(1407579569) }
+        it { expect(transaction.response.url).to eq("https://pay.moolah.io/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-") }
       end
 
-      it "allows transaction params to be given in the block" do
-        transaction = client.create_transaction do |t|
-          t.coin = "dogecoin"
-          t.currency = "USD"
-          t.amount = "20"
-          t.product = "Coingecko Pro"
+      context "allows transaction params to be given as argument" do
+        let(:transaction) { client.create_transaction transaction_params }
+
+        it_behaves_like "successful transaction"
+      end
+
+      context "allows transaction params to be given in the block" do
+        let(:transaction) do 
+          client.create_transaction do |t|
+            t.coin = "dogecoin"
+            t.currency = "USD"
+            t.amount = "20"
+            t.product = "Coingecko Pro"
+          end
         end
 
-        transaction_response = transaction.response
-        expect(transaction_response.status).to eq("success")
-        expect(transaction_response.amount).to eq("121526.39285714")
-        expect(transaction_response.coin).to eq("dogecoin")
-        expect(transaction_response.url).to eq("https://pay.moolah.io/a4dc89fcc-8ad-3f4c1bf529-6396c1acc4-")
+        it_behaves_like "successful transaction"
       end
     end
 
