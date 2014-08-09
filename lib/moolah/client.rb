@@ -7,11 +7,8 @@ module Moolah
     CREATE_TRANSACTION_ACTION = "/private/merchant/create"
     QUERY_TRANSACTION_ACTION = "/private/merchant/status"
 
-    # Initializes a new Client
-    #
-    # @param options [Hash]
     def initialize
-      # Check for api key
+      # Check for API key
       raise ArgumentError, "API Key is not set!" unless Moolah.api_key
     end
 
