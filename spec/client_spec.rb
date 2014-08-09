@@ -34,11 +34,11 @@ describe Moolah::Client do
   describe ".create_transaction" do
     let(:action_path) { "/private/merchant/create" }
     let(:transaction_params) { { coin: "dogecoin", amount: "1234", currency: "USD", product: "Coingecko Pro" } }
-    let(:request_stubs) do
-      Faraday::Adapter::Test::Stubs.new do |stub|
-        stub.post(action_path) { |env| [ 200, {}, 'hello' ]}
-      end
-    end
+    let(:request_stubs) { Faraday::Adapter::Test::Stubs.new }
+    #    do |stub|
+    #     stub.post(action_path) { |env| [ 200, {}, 'hello' ]}
+    #   end
+    # end
     let (:test_connection) do
       Faraday.new do |builder|
         builder.adapter :test, request_stubs
@@ -52,9 +52,9 @@ describe Moolah::Client do
 
     context "without optional parameters (ipn, api_secret, ipn_extra)" do
       let(:client) { Moolah::Client.new }
-      
       before do
         allow(client).to receive(:connection).and_return(test_connection)
+        request_stubs.post("#{action_path}?amount=1234&apiKey=1234567890&coin=dogecoin&currency=USD&product=Coingecko+Pro") { |env| [ 200, {}, 'hello' ] }
       end
 
       it "allows transaction params to be given as argument" do
@@ -66,7 +66,7 @@ describe Moolah::Client do
         transaction = client.create_transaction do |t|
           t.coin = "dogecoin"
           t.currency = "USD"
-          t.amount = "123"
+          t.amount = "1234"
           t.product = "Coingecko Pro"
         end
         expect(transaction.product).to eq("Coingecko Pro")
@@ -77,6 +77,7 @@ describe Moolah::Client do
       let(:client) { Moolah::Client.new({ api_secret: "secret", ipn: "www.example.com/processed_payment" }) }
       before do
         allow(client).to receive(:connection).and_return(test_connection)
+        request_stubs.post("#{action_path}?amount=1234&apiKey=1234567890&apiSecret=secret&coin=dogecoin&currency=USD&ipn=www.example.com%2Fprocessed_payment&product=Coingecko+Pro") { |env| [ 200, {}, 'hello' ] }
       end
 
       it "sends out request with these optional parameters" do
