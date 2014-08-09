@@ -1,10 +1,14 @@
 require 'moolah/version'
+require 'JSON'
 
 module Moolah
   class Transaction
     TRANSACTION_KEYS = [ :coin, :currency, :amount, :product ].freeze
 
     attr_accessor *TRANSACTION_KEYS
+
+    # Returns a TransactionResponse
+    attr_accessor response
 
     # Initializes a new Transaction
     #
@@ -34,4 +38,19 @@ module Moolah
       end
     end
   end
+
+  class TransactionResponse
+    RESPONSE_JSON_KEYS = [ :status, :guid, :address, :url, :coin, :amount, :timestamp ].freeze
+
+    def initialize(json_response_string = "")
+      raise ArgumentError, "JSON transaction response cannot be empty!" if json_response_string.empty?
+
+      json_response_hash = JSON.parse(json_response_string)
+      puts json_response_hash
+      
+      RESPONSE_JSON_KEYS.each do |key|
+        self.send("#{key}=", json_response_hash[key])
+      end
+    end
+  end 
 end
