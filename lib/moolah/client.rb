@@ -21,25 +21,19 @@ module Moolah
       # Check all parameters present
       raise ArgumentError, "Missing transaction parameter(s)" unless coin && currency && amount && product
 
-      faraday_response = connection.post do |req|
-        req.url CREATE_TRANSACTION_ACTION
+      request_body = { coin: coin, currency: currency, amount: amount, product: product, apiKey: Moolah.api_key }
 
-        # Required fields
-        req.params['apiKey'] = Moolah.api_key # apiKey (camel case) is the actual field
-        req.params['coin'] = coin
-        req.params['currency'] = currency
-        req.params['amount'] = amount
-        req.params['product'] = product
+      ipn = transaction_params[:ipn] || transaction_params["ipn"]
+      if ipn
+        ipn_extra = transaction_params[:ipn_extra] || transaction_params["ipn_extra"]
+        request_body[:ipn] = ipn 
+        request_body[:ipn_extra] = ipn_extra
+        request_body[:apiSecret] = Moolah.api_secret
+      end
 
-        # Optional fields
-        ipn = transaction_params[:ipn] || transaction_params["ipn"]
-        if ipn
-          raise ArgumentError, "API Secret is not set!" unless Moolah.api_secret
-
-          req.params['ipn'] = ipn
-          req.params['ipn_extra'] = transaction_params[:ipn_extra] || transaction_params["ipn_extra"]
-          req.params['apiSecret'] = Moolah.api_secret # apiSecret (camel case) is the actual field
-        end
+      faraday_response = connection.post do |request|
+        request.url CREATE_TRANSACTION_ACTION
+        request.body = request_body
       end
 
       json_response = JSON.parse(faraday_response.body)
@@ -62,7 +56,7 @@ module Moolah
 
     # Connection method for ease of stubbing
     def connection
-      @connection ||= Faraday.new(Moolah.endpoint)
+      @connection ||= Faraday.new(url: Moolah.endpoint)
     end
 
     def symbolize_keys(hash)
