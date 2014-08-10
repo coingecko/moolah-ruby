@@ -62,11 +62,11 @@ module Moolah
 
     # Connection method for ease of stubbing
     def connection
-      @connection ||= Faraday.new(url: Moolah.endpoint)
+      @connection ||= Faraday.new(Moolah.endpoint)
     end
 
     def symbolize_keys(hash)
-      return hash unless hash.is_a?(Hash) 
+      return hash unless hash.is_a?(Hash)
 
       symbolized_hash = hash.inject({}) do |memo, (k,v)|
         memo[k.to_sym] = symbolize_keys(v)
