@@ -2,7 +2,7 @@ require 'moolah/version'
 
 module Moolah
   module Configuration
-    DEFAULT_ENDPOINT = "https://api.moolah.io/v2"
+    DEFAULT_ENDPOINT = "https://api.moolah.io"
     DEFAULT_API_KEY = nil
     DEFAULT_API_SECRET = nil
 

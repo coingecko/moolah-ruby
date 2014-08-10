@@ -4,8 +4,8 @@ require 'json'
 
 module Moolah
   class Client
-    CREATE_TRANSACTION_ACTION = "/private/merchant/create"
-    QUERY_TRANSACTION_ACTION = "/private/merchant/status"
+    CREATE_TRANSACTION_ACTION = "/v2/private/merchant/create"
+    QUERY_TRANSACTION_ACTION = "/v2/private/merchant/status"
 
     def initialize
       # Check for API key
