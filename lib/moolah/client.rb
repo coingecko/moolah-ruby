@@ -43,11 +43,11 @@ module Moolah
     def query_transaction(params = {})
       guid = params[:guid] || params["guid"]
 
-      faraday_response = connection.post do |req|
-        req.url QUERY_TRANSACTION_ACTION
+      request_body = { guid: guid, apiKey: Moolah.api_key }
 
-        req.params['apiKey'] = Moolah.api_key;
-        req.params['guid'] = guid;
+      faraday_response = connection.post do |request|
+        request.url QUERY_TRANSACTION_ACTION
+        request.body = request_body
       end
 
       json_response = JSON.parse(faraday_response.body)
