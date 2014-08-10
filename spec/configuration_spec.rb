@@ -5,7 +5,7 @@ describe Moolah do
     it "has default values" do
       expect(Moolah.send(:api_key)).to eq(nil)
       expect(Moolah.send(:api_secret)).to eq(nil)
-      expect(Moolah.send(:endpoint)).to eq("https://api.moolah.io/v2")
+      expect(Moolah.send(:endpoint)).to eq("https://api.moolah.io")
     end
   end
 
