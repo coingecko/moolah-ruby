@@ -33,7 +33,7 @@ require 'moolah'
 Moolah.configure do |config|
   config.api_key = ENV['API_KEY']
   config.api_secret = ENV['API_SECRET'] # necessary for IPN response
-  # config.endpoint = "https://api.moolah.io/v2"
+  # config.endpoint = "https://api.moolah.io" # endpoint must not contain paths, "/v2" is included in API calls
 end
 ```
 
