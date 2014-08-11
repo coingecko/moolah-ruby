@@ -62,6 +62,10 @@ query_result[:transaction][:tx][:coin] # "bitcoin"
 # etc.
 ```
 
+## API Doc
+Complete API documentation available at https://moolah.io/dashboard/merchant/api
+
+
 ## Contributing
 
 1. Fork it ( https://github.com/coingecko/moolah-ruby/fork )
