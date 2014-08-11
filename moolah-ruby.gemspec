@@ -6,8 +6,8 @@ require 'moolah/version'
 Gem::Specification.new do |spec|
   spec.name          = "moolah-ruby"
   spec.version       = Moolah::VERSION
-  spec.authors       = ["TM Lee"]
-  spec.email         = ["tm89lee@gmail.com"]
+  spec.authors       = ["Jonathan ES Lin", "TM Lee"]
+  spec.email         = ["ernsheong@gmail.com", "tm89lee@gmail.com"]
   spec.summary       = %q{Ruby wrapper for the Moolah.io Transaction API}
   spec.description   = %q{Ruby wrapper for the Moolah.io Transaction API}
   spec.homepage      = ""
