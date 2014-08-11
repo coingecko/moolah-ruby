@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/coingecko/moolah-ruby.png)](https://travis-ci.org/coingecko/moolah-ruby)
+
 # Moolah::Ruby
 
 Wrapper API for Moolah's Transaction API (v2)
